@@ -1,6 +1,16 @@
 import './style.css'
 import { io } from 'socket.io-client';
 
+// ===================================================================
+//  IMPORTANT: THIS IS WHERE YOU PUT YOUR PUBLIC IP ADDRESS
+// ===================================================================
+// Replace 'YOUR_PUBLIC_IP_ADDRESS' with the public IP of the computer
+// running the server.ts file. Make sure port 3000 is forwarded.
+//
+// Example: const SERVER_URL = 'http://123.45.67.89:3000';
+//
+const SERVER_URL = 'http://YOUR_PUBLIC_IP_ADDRESS:3000';
+
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
 app.innerHTML = `
@@ -51,7 +61,7 @@ app.innerHTML = `
   </div>
 `;
 
-const socket = io();
+const socket = io(SERVER_URL);
 const statusElement = document.getElementById('connection-status')!;
 const uploadForm = document.getElementById('upload-form') as HTMLFormElement;
 const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -86,15 +96,17 @@ const getFileIcon = (filename: string): string => {
 };
 
 const renderFileRepresentation = (filename: string): string => {
+  const encodedFilename = encodeURIComponent(filename);
   if (isImage(filename)) {
-    return `<img src="/download/${encodeURIComponent(filename)}" alt="${filename}" loading="lazy">`;
+    // Use the full server URL for image previews
+    return `<img src="${SERVER_URL}/download/${encodedFilename}" alt="${filename}" loading="lazy">`;
   }
   return getFileIcon(filename);
 };
 
 // --- Preview Modal Logic ---
 const showPreview = (filename: string) => {
-  previewImage.src = `/download/${encodeURIComponent(filename)}`;
+  previewImage.src = `${SERVER_URL}/download/${encodeURIComponent(filename)}`;
   previewModal.style.display = 'flex';
 };
 
@@ -131,7 +143,7 @@ deleteConfirmBtn.addEventListener('click', async () => {
   if (!fileToDelete) return;
 
   try {
-    const response = await fetch(`/files/${encodeURIComponent(fileToDelete)}`, {
+    const response = await fetch(`${SERVER_URL}/files/${encodeURIComponent(fileToDelete)}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -149,7 +161,7 @@ deleteConfirmBtn.addEventListener('click', async () => {
 // --- Main Application Logic ---
 const fetchAndRenderFiles = async () => {
   try {
-    const response = await fetch('/files');
+    const response = await fetch(`${SERVER_URL}/files`);
     if (!response.ok) throw new Error('Failed to fetch files');
     
     const files: string[] = await response.json();
@@ -169,7 +181,7 @@ const fetchAndRenderFiles = async () => {
           </div>
           <div class="file-name" title="${file}">${file}</div>
           <div class="file-actions">
-            <a href="/download/${encodedFile}" class="action-btn download-btn" download>Download</a>
+            <a href="${SERVER_URL}/download/${encodedFile}" class="action-btn download-btn" download>Download</a>
             <button class="action-btn delete-btn" data-filename="${file}">Delete</button>
           </div>
         `;
@@ -245,7 +257,7 @@ const uploadFileWithProgress = (file: File, onComplete: () => void) => {
     onComplete();
   });
 
-  xhr.open('POST', '/upload', true);
+  xhr.open('POST', `${SERVER_URL}/upload`, true);
   xhr.send(formData);
 };
 

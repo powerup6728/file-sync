@@ -15,7 +15,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    // IMPORTANT: Add your Vercel app's URL here
+    origin: ['http://localhost:5173', 'https://YOUR_VERCEL_APP_URL.vercel.app'],
+    methods: ['GET', 'POST'],
   },
 });
 
