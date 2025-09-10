@@ -1,16 +1,12 @@
 import './style.css'
 import { io } from 'socket.io-client';
 
-// ===================================================================
-//  IMPORTANT: THIS IS WHERE YOU PUT YOUR PUBLIC IP ADDRESS
-// ===================================================================
-// Replace 'YOUR_PUBLIC_IP_ADDRESS' with the public IP of the computer
-// running the server.ts file. Make sure port 3000 is forwarded.
-//
-// You can find your public IP by searching "what is my IP" on Google.
-// Example: const SERVER_URL = 'http://123.45.67.89:3000';
-//
-const SERVER_URL = '73.109.71.153:3000';
+// The server URL is now read from an environment variable.
+// For local development, it defaults to the current hostname.
+// For Vercel, you will set VITE_SERVER_URL in the project settings.
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || `http://${window.location.hostname}:3000`;
+
+console.log(`Connecting to server at: ${SERVER_URL}`);
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 

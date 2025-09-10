@@ -7,24 +7,28 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import os from 'os';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
+
+// Setup CORS origins
+const allowedOrigins = ['http://localhost:5173'];
+if (process.env.VITE_ALLOWED_ORIGIN) {
+  allowedOrigins.push(process.env.VITE_ALLOWED_ORIGIN);
+  console.log(`Added Vercel origin from environment: ${process.env.VITE_ALLOWED_ORIGIN}`);
+}
+
 const io = new Server(server, {
   cors: {
-    // ===================================================================
-    // IMPORTANT: THIS IS WHERE YOU PUT YOUR VERCEL APP URL
-    // ===================================================================
-    // Replace 'YOUR_VERCEL_APP_URL.vercel.app' with the actual URL of
-    // your deployed Vercel application.
-    //
-    // Example: origin: ['http://localhost:5173', 'https://my-sync-app.vercel.app']
-    //
-    origin: ['http://localhost:5173', 'https://YOUR_VERCEL_APP_URL.vercel.app'],
-    methods: ['GET', 'POST', 'DELETE'], // Added DELETE
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'DELETE'],
   },
 });
 
