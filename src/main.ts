@@ -9,7 +9,7 @@ import { io } from 'socket.io-client';
 //
 // Example: const SERVER_URL = 'http://123.45.67.89:3000';
 //
-const SERVER_URL = 'http://YOUR_PUBLIC_IP_ADDRESS:3000';
+const SERVER_URL = '73.109.71.153:3000';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
