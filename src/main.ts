@@ -1,12 +1,11 @@
 import './style.css'
 import { io } from 'socket.io-client';
 
-// The server URL is now read from an environment variable.
-// For local development, it defaults to the current hostname.
-// For Vercel, you will set VITE_SERVER_URL in the project settings.
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || `http://${window.location.hostname}:3000`;
+// For a purely local setup, we make requests to the same server that serves the frontend.
+// The Vite dev server's proxy will forward these requests to our backend on port 3000.
+const SERVER_URL = ''; 
 
-console.log(`Connecting to server at: ${SERVER_URL}`);
+console.log(`Client configured for local development.`);
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -58,7 +57,8 @@ app.innerHTML = `
   </div>
 `;
 
-const socket = io(SERVER_URL);
+// Connect to the server via the proxy
+const socket = io();
 const statusElement = document.getElementById('connection-status')!;
 const uploadForm = document.getElementById('upload-form') as HTMLFormElement;
 const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -95,7 +95,7 @@ const getFileIcon = (filename: string): string => {
 const renderFileRepresentation = (filename: string): string => {
   const encodedFilename = encodeURIComponent(filename);
   if (isImage(filename)) {
-    // Use the full server URL for image previews
+    // Use a relative path, which will be handled by the Vite proxy
     return `<img src="${SERVER_URL}/download/${encodedFilename}" alt="${filename}" loading="lazy">`;
   }
   return getFileIcon(filename);

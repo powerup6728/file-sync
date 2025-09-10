@@ -3,8 +3,9 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   server: {
     host: '0.0.0.0', // Expose the server to the network
-    // Proxy is no longer needed for production builds on Vercel,
-    // but it's kept here for local development consistency.
+    // The proxy is essential for local development. It forwards API
+    // and WebSocket requests from the client (on port 5173)
+    // to the backend server (on port 3000), avoiding CORS issues.
     proxy: {
       '/socket.io': {
         target: 'http://localhost:3000',

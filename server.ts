@@ -6,11 +6,6 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
-import os from 'os';
-import dotenv from 'dotenv';
-
-// Load environment variables from .env file
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,12 +13,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-// Setup CORS origins
+// Setup CORS for the local Vite dev server
 const allowedOrigins = ['http://localhost:5173'];
-if (process.env.VITE_ALLOWED_ORIGIN) {
-  allowedOrigins.push(process.env.VITE_ALLOWED_ORIGIN);
-  console.log(`Added Vercel origin from environment: ${process.env.VITE_ALLOWED_ORIGIN}`);
-}
 
 const io = new Server(server, {
   cors: {
@@ -139,19 +130,5 @@ watcher
   });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running!`);
-  
-  const networkInterfaces = os.networkInterfaces();
-  console.log('Access it from other devices on your network at:');
-  Object.keys(networkInterfaces).forEach(ifaceName => {
-    const iface = networkInterfaces[ifaceName];
-    if (iface) {
-      iface.forEach(details => {
-        if (details.family === 'IPv4' && !details.internal) {
-          console.log(`- http://${details.address}:${PORT}`);
-        }
-      });
-    }
-  });
-  console.log(`For external access, use your public IP address with port ${PORT} forwarded.`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
