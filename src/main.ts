@@ -7,6 +7,7 @@ import { io } from 'socket.io-client';
 // Replace 'YOUR_PUBLIC_IP_ADDRESS' with the public IP of the computer
 // running the server.ts file. Make sure port 3000 is forwarded.
 //
+// You can find your public IP by searching "what is my IP" on Google.
 // Example: const SERVER_URL = 'http://123.45.67.89:3000';
 //
 const SERVER_URL = '73.109.71.153:3000';

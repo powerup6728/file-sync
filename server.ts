@@ -15,9 +15,16 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    // IMPORTANT: Add your Vercel app's URL here
+    // ===================================================================
+    // IMPORTANT: THIS IS WHERE YOU PUT YOUR VERCEL APP URL
+    // ===================================================================
+    // Replace 'YOUR_VERCEL_APP_URL.vercel.app' with the actual URL of
+    // your deployed Vercel application.
+    //
+    // Example: origin: ['http://localhost:5173', 'https://my-sync-app.vercel.app']
+    //
     origin: ['http://localhost:5173', 'https://YOUR_VERCEL_APP_URL.vercel.app'],
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'DELETE'], // Added DELETE
   },
 });
 
@@ -108,7 +115,7 @@ io.on('connection', (socket) => {
 });
 
 const watcher = chokidar.watch(SYNC_DIR, {
-  ignored: /(^|[\/\\])\../, // ignore dotfiles
+  ignored: /(^|[/\\])\../, // ignore dotfiles
   persistent: true,
   ignoreInitial: true,
 });
